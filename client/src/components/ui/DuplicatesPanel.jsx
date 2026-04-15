@@ -2,9 +2,13 @@ import { motion } from 'framer-motion';
 
 function SimilarityBadge({ value }) {
   const pct = Math.round(value * 100);
-  const color = pct >= 90 ? 'danger' : pct >= 75 ? 'accent3' : 'accent';
+  const tone = pct >= 90
+    ? 'border-danger/30 bg-danger/10 text-danger'
+    : pct >= 75
+      ? 'border-accent3/30 bg-accent3/10 text-accent3'
+      : 'border-accent/30 bg-accent/10 text-accent';
   return (
-    <span className={`font-mono text-xs px-2 py-0.5 rounded border border-${color}/30 bg-${color}/10 text-${color} font-bold`}>
+    <span className={`rounded-full border px-2.5 py-1 font-mono text-xs font-bold ${tone}`}>
       {pct}%
     </span>
   );
@@ -44,15 +48,15 @@ function DuplicatePair({ dup, index }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="bg-black/20 border border-danger/20 rounded-xl p-4"
+      className="panel-card p-4"
     >
-      <div className="flex items-start justify-between mb-3">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-danger font-mono text-xs font-bold">⚠ DUPLICATE PAIR #{index + 1}</span>
+          <div className="mb-2 flex items-center gap-2">
+            <span className="rounded-full border border-danger/25 bg-danger/10 px-2.5 py-1 font-mono text-xs font-bold text-danger">Duplicate Pair #{index + 1}</span>
             <SimilarityBadge value={similarity} />
           </div>
-          <div className="font-mono text-xs text-muted">
+          <div className="font-mono text-xs text-slate-400">
             {recordA?.id || recordA} ↔ {recordB?.id || recordB}
           </div>
         </div>
@@ -60,23 +64,23 @@ function DuplicatePair({ dup, index }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         {/* Record summaries */}
-        <div className="bg-accent/5 border border-accent/10 rounded-lg p-2">
-          <p className="text-accent text-xs font-mono font-bold mb-1">Record A</p>
+        <div className="rounded-2xl border border-accent/10 bg-accent/5 p-3">
+          <p className="mb-1 text-xs font-mono font-bold text-accent">Record A</p>
           {recordA?.name && <p className="text-white text-xs font-semibold">{recordA.name}</p>}
-          {recordA?.dob && <p className="text-muted text-xs font-mono">{recordA.dob}</p>}
-          {recordA?.address && <p className="text-muted text-xs truncate" title={recordA.address}>{recordA.address}</p>}
+          {recordA?.dob && <p className="text-slate-400 text-xs font-mono">{recordA.dob}</p>}
+          {recordA?.address && <p className="text-slate-400 text-xs truncate" title={recordA.address}>{recordA.address}</p>}
         </div>
-        <div className="bg-accent2/5 border border-accent2/10 rounded-lg p-2">
-          <p className="text-accent2 text-xs font-mono font-bold mb-1">Record B</p>
+        <div className="rounded-2xl border border-accent2/10 bg-accent2/5 p-3">
+          <p className="mb-1 text-xs font-mono font-bold text-accent2">Record B</p>
           {recordB?.name && <p className="text-white text-xs font-semibold">{recordB.name}</p>}
-          {recordB?.dob && <p className="text-muted text-xs font-mono">{recordB.dob}</p>}
-          {recordB?.address && <p className="text-muted text-xs truncate" title={recordB.address}>{recordB.address}</p>}
+          {recordB?.dob && <p className="text-slate-400 text-xs font-mono">{recordB.dob}</p>}
+          {recordB?.address && <p className="text-slate-400 text-xs truncate" title={recordB.address}>{recordB.address}</p>}
         </div>
       </div>
 
       {fieldList.length > 0 && (
         <div className="mt-3">
-          <p className="text-muted text-xs font-mono mb-2">Field similarity breakdown:</p>
+          <p className="mb-2 text-xs font-mono text-slate-400">Field similarity breakdown</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {fieldList.map((f) => (
               <FieldMatch key={f.field} {...f} />
@@ -91,10 +95,10 @@ function DuplicatePair({ dup, index }) {
 export default function DuplicatesPanel({ results, records }) {
   if (!results) {
     return (
-      <div className="bg-surface border border-border rounded-xl p-8 text-center">
-        <div className="text-5xl mb-3 opacity-30">◈</div>
-        <h3 className="font-display text-white font-semibold mb-1">Deduplication Results</h3>
-        <p className="text-muted text-sm">Run the algorithms to see detected duplicates here.</p>
+      <div className="panel-card p-10 text-center">
+        <div className="mb-3 text-5xl opacity-30">◈</div>
+        <h3 className="font-display font-semibold text-white mb-1">Deduplication Results</h3>
+        <p className="text-sm text-slate-400">Run the algorithms to see detected duplicates, agreement, and match confidence here.</p>
       </div>
     );
   }
@@ -110,17 +114,17 @@ export default function DuplicatesPanel({ results, records }) {
   return (
     <div className="space-y-4">
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid gap-3 md:grid-cols-3">
         {[
-          { algo: 'Divide & Conquer', dups: dc.duplicates.length, comparisons: dc.comparisons, time: dc.timeMs, color: 'accent' },
-          { algo: 'Backtracking', dups: bt.duplicates.length, comparisons: bt.comparisons || 0, time: bt.timeMs, color: 'accent2' },
-          { algo: 'Heuristic', dups: h.duplicates.length, comparisons: h.totalComparisons, time: h.timeMs, color: 'accent3' },
+          { algo: 'Divide & Conquer', dups: dc.duplicates.length, comparisons: dc.comparisons, time: dc.timeMs, tone: 'border-accent/15 bg-accent/5 text-accent' },
+          { algo: 'Backtracking', dups: bt.duplicates.length, comparisons: bt.comparisons || 0, time: bt.timeMs, tone: 'border-accent2/15 bg-accent2/5 text-accent2' },
+          { algo: 'Heuristic', dups: h.duplicates.length, comparisons: h.totalComparisons, time: h.timeMs, tone: 'border-accent3/15 bg-accent3/5 text-accent3' },
         ].map(a => (
-          <div key={a.algo} className={`bg-surface border border-${a.color}/20 rounded-xl p-4 text-center`}>
-            <p className={`text-${a.color} font-mono text-xs font-bold mb-2`}>{a.algo}</p>
-            <p className={`text-${a.color} font-display font-bold text-2xl`}>{a.dups}</p>
-            <p className="text-muted text-xs font-mono">duplicates</p>
-            <div className="mt-2 text-muted text-[10px] font-mono space-y-0.5">
+          <div key={a.algo} className={`panel-card p-4 ${a.tone}`}>
+            <p className="mb-3 font-mono text-[11px] font-bold uppercase tracking-[0.2em]">{a.algo}</p>
+            <p className="font-display text-3xl font-bold">{a.dups}</p>
+            <p className="mt-1 text-xs font-mono text-slate-400">duplicates</p>
+            <div className="mt-4 space-y-0.5 font-mono text-[10px] text-slate-400">
               <p>{a.comparisons} comparisons</p>
               <p>{a.time}ms</p>
             </div>
@@ -129,8 +133,8 @@ export default function DuplicatesPanel({ results, records }) {
       </div>
 
       {/* Algorithm agreement */}
-      <div className="bg-surface border border-border rounded-xl p-4">
-        <h3 className="font-display font-semibold text-white text-sm mb-2">Algorithm Consensus</h3>
+      <div className="panel-card p-4">
+        <h3 className="section-title mb-2">Algorithm Consensus</h3>
         <div className="flex items-center gap-3 font-mono text-xs">
           {dc.duplicates.length === bt.duplicates.length && bt.duplicates.length === h.duplicates.length ? (
             <span className="text-success">✓ All 3 algorithms agree: {dc.duplicates.length} duplicate pairs found</span>
@@ -138,20 +142,21 @@ export default function DuplicatesPanel({ results, records }) {
             <span className="text-accent3">⚡ Slight variance: D&C={dc.duplicates.length}, BT={bt.duplicates.length}, Heuristic={h.duplicates.length}</span>
           )}
         </div>
+        <p className="mt-2 text-xs text-slate-500">{records.length} source records evaluated across all strategies.</p>
       </div>
 
       {/* Duplicate pairs */}
       <div>
-        <h3 className="font-display font-semibold text-white text-sm mb-3">
+        <h3 className="mb-3 font-display text-sm font-semibold text-white">
           Detected Duplicates 
-          <span className="text-danger ml-2 font-mono">({duplicates.length})</span>
+          <span className="ml-2 font-mono text-danger">({duplicates.length})</span>
         </h3>
 
         {duplicates.length === 0 ? (
-          <div className="bg-surface border border-success/20 rounded-xl p-6 text-center">
-            <div className="text-3xl mb-2">✓</div>
-            <p className="text-success font-semibold font-display">No duplicates detected</p>
-            <p className="text-muted text-xs font-mono mt-1">All records appear to be unique</p>
+          <div className="panel-card border-success/20 p-6 text-center">
+            <div className="mb-2 text-3xl">✓</div>
+            <p className="font-display font-semibold text-success">No duplicates detected</p>
+            <p className="mt-1 font-mono text-xs text-slate-400">All records appear to be unique</p>
           </div>
         ) : (
           <div className="space-y-3 overflow-y-auto" style={{ maxHeight: '600px' }}>

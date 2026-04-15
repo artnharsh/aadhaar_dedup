@@ -9,16 +9,16 @@ export default {
         body: ['IBM Plex Sans', 'sans-serif'],
       },
       colors: {
-        bg: '#0a0e1a',
-        surface: '#111827',
-        border: '#1e293b',
-        accent: '#00d9ff',
-        accent2: '#7c3aed',
-        accent3: '#f59e0b',
-        success: '#10b981',
-        danger: '#ef4444',
-        warn: '#f59e0b',
-        muted: '#64748b',
+        bg: '#08111c',
+        surface: '#0f1b2d',
+        border: '#22324a',
+        accent: '#63d2e7',
+        accent2: '#8aa8ff',
+        accent3: '#f3b46b',
+        success: '#38c793',
+        danger: '#ff7d7d',
+        warn: '#f3b46b',
+        muted: '#8da1ba',
       },
       animation: {
         'pulse-fast': 'pulse 0.8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -26,8 +26,8 @@ export default {
       },
       keyframes: {
         glow: {
-          '0%': { boxShadow: '0 0 5px #00d9ff33' },
-          '100%': { boxShadow: '0 0 20px #00d9ff66, 0 0 40px #00d9ff22' },
+          '0%': { boxShadow: '0 0 6px rgba(99, 210, 231, 0.16)' },
+          '100%': { boxShadow: '0 0 20px rgba(99, 210, 231, 0.28), 0 0 40px rgba(99, 210, 231, 0.12)' },
         }
       }
     }
